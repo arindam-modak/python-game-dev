@@ -4,7 +4,7 @@ from random import randint
 class BaseClass(pygame.sprite.Sprite):
 
     allsprites = pygame.sprite.Group()
-    def __init__(self,x,y,width,height,image_string):
+    def __init__(self,x,y,image_string):
         
         pygame.sprite.Sprite.__init__(self)
         BaseClass.allsprites.add(self)
@@ -15,17 +15,19 @@ class BaseClass(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-        self.width = width
-        self.height = height
+    def destroy(self, ClassName):
+        ClassName.List.remove(self)
+        BaseClass.allsprites.remove(self)
+        del self
 
 class Bug(BaseClass):
 
     List = pygame.sprite.Group()
     going_right = True
     
-    def __init__(self,x,y,width,height,image_string):
+    def __init__(self,x,y,image_string):
 
-        BaseClass.__init__(self,x,y,width,height,image_string)
+        BaseClass.__init__(self,x,y,image_string)
         Bug.List.add(self)
         self.velx, self.vely = 0, 5
         self.jumping, self.go_down = False, False
@@ -37,10 +39,10 @@ class Bug(BaseClass):
         
         if predicted_locationx < 0:
             self.velx = 0
-        elif predicted_locationx + self.width > SCREENWIDTH:
+        elif predicted_locationx + self.rect.width > SCREENWIDTH:
             self.velx = 0
             
-        if predicted_locationy + self.width > SCREENHEIGHT:
+        if predicted_locationy + self.rect.width > SCREENHEIGHT:
             self.vely *= -1
             self.jumping, self.go_down = False, False
                 
@@ -57,14 +59,26 @@ class Bug(BaseClass):
 class Fly(BaseClass):
 
     List = pygame.sprite.Group()
-    def __init__(self,x,y,width,height,image_string):
-        BaseClass.__init__(self,x,y,width,height,image_string)
+    def __init__(self,x,y,image_string):
+        BaseClass.__init__(self,x,y,image_string)
         Fly.List.add(self)
+        self.health = 100
+        self.half_health = self.health/2.0
         self.velx = randint(1, 4)
         self.amplitude, self.period = randint(20,140), randint(4, 5)/100.0
 
+    @staticmethod
+    def update_all(SCREENWIDTH):
+        for fly in Fly.List:
+            
+            fly.fly(SCREENWIDTH)
+            
+            if fly.health <= 0:
+                fly.destroy(Fly)
+
+    
     def fly(self, SCREENWIDTH):
-        if self.rect.x + self.width > SCREENWIDTH or self.rect.x < 0:
+        if self.rect.x + self.rect.width > SCREENWIDTH or self.rect.x < 0:
             self.image = pygame.transform.flip(self.image,True, False)
             self.velx = -self.velx
             
@@ -74,28 +88,28 @@ class Fly(BaseClass):
 
         self.rect.y = self.amplitude * math.sin(self.period * self.rect.x) + 140
         
-    @staticmethod
-    def movement(SCREENWIDTH):
-        for fly in Fly.List:
-            fly.fly(SCREENWIDTH)
+        #@staticmethod
+        #def movement(SCREENWIDTH):
+        #   for fly in Fly.List:
+        #        fly.fly(SCREENWIDTH)
     
 class BugAttack(pygame.sprite.Sprite):
     List = pygame.sprite.Group()
     normal_list = []
-    def __init__(self,x,y,width,height,image_string):
+    fire = True
+    
+    def __init__(self,x,y,image_string):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(image_string)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.width = width
-        self.height = height
 
         try:
             last_element = BugAttack.normal_list[-1]
             difference = abs(self.rect.x - last_element.rect.x)
 
-            if difference < self.width:
+            if difference < self.rect.width:
                 return
         except Exception:
             pass
@@ -109,5 +123,8 @@ class BugAttack(pygame.sprite.Sprite):
         for attack in BugAttack.List:
             attack.rect.x += attack.velx
     
-        
+    def destroy(self):
+        BugAttack.List.remove(self)
+        BugAttack.normal_list.remove(self)
+        del self
         

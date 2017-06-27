@@ -21,6 +21,8 @@ class BaseClass(pygame.sprite.Sprite):
 class Bug(BaseClass):
 
     List = pygame.sprite.Group()
+    going_right = True
+    
     def __init__(self,x,y,width,height,image_string):
 
         BaseClass.__init__(self,x,y,width,height,image_string)
@@ -77,4 +79,35 @@ class Fly(BaseClass):
         for fly in Fly.List:
             fly.fly(SCREENWIDTH)
     
+class BugAttack(pygame.sprite.Sprite):
+    List = pygame.sprite.Group()
+    normal_list = []
+    def __init__(self,x,y,width,height,image_string):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(image_string)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.width = width
+        self.height = height
+
+        try:
+            last_element = BugAttack.normal_list[-1]
+            difference = abs(self.rect.x - last_element.rect.x)
+
+            if difference < self.width:
+                return
+        except Exception:
+            pass
+        
+        BugAttack.normal_list.append(self)
+        BugAttack.List.add(self)
+        self.velx = None
+
+    @staticmethod
+    def movement():
+        for attack in BugAttack.List:
+            attack.rect.x += attack.velx
+    
+        
         

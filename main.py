@@ -7,23 +7,23 @@ SCREENWIDTH, SCREENHEIGHT = 640, 360
 screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 clock = pygame.time.Clock()
 FPS = 24
-
+total_frames = 0
 background = pygame.image.load("images/forest.jpg")
 bug = Bug(0,SCREENHEIGHT - 40,40,40,"images/bug2right.png")
-fly = Fly(40,100,40,40,"images/fly.png")
-fly1 = Fly(40,100,40,40,"images/fly.png")
-fly2= Fly(40,100,40,40,"images/fly.png")
-fly3= Fly(40,100,40,40,"images/fly.png")
+
 
 while True:
 
-    process(bug)
+    process(bug,FPS,total_frames)
     
     bug.motion(SCREENWIDTH,SCREENHEIGHT)
     Fly.movement(SCREENWIDTH)
+    BugAttack.movement()
+    total_frames += 1
     #screen.fill((255,0,200))
     screen.blit(background,(0,0))
     BaseClass.allsprites.draw(screen)
+    BugAttack.List.draw(screen)
     pygame.display.flip()
 
     clock.tick(FPS)

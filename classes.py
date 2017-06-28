@@ -58,26 +58,35 @@ class Bug(BaseClass):
 
 class Fly(BaseClass):
 
+    count = 0
     List = pygame.sprite.Group()
     def __init__(self,x,y,image_string):
         BaseClass.__init__(self,x,y,image_string)
         Fly.List.add(self)
+        self.go_down = False
+        self.vely = 2
         self.health = 100
         self.half_health = self.health/2.0
         self.velx = randint(1, 4)
         self.amplitude, self.period = randint(20,140), randint(4, 5)/100.0
 
     @staticmethod
-    def update_all(SCREENWIDTH):
+    def update_all(SCREENWIDTH,SCREENHEIGHT):
         for fly in Fly.List:
             
-            fly.fly(SCREENWIDTH)
+            fly.fly(SCREENWIDTH,SCREENHEIGHT)
             
             if fly.health <= 0:
                 fly.destroy(Fly)
-
+                Fly.count += 1
+                
+    @staticmethod
+    def score(screen):
+        font = pygame.font.SysFont(None, 40)
+        text = font.render("Score : "+str(Fly.count), True,  (255,255,255))
+        screen.blit(text,(0,0))
     
-    def fly(self, SCREENWIDTH):
+    def fly(self, SCREENWIDTH,SCREENHEIGHT):
         if self.rect.x + self.rect.width > SCREENWIDTH or self.rect.x < 0:
             self.image = pygame.transform.flip(self.image,True, False)
             self.velx = -self.velx
@@ -85,8 +94,12 @@ class Fly(BaseClass):
         self.rect.x += self.velx
 
         # a * sin(bx + c) + y
-
-        self.rect.y = self.amplitude * math.sin(self.period * self.rect.x) + 140
+        if self.go_down:
+            if self.rect.y+self.rect.height >= SCREENHEIGHT:
+                self.vely = 0
+            self.rect.y += self.vely
+        else:
+            self.rect.y = self.amplitude * math.sin(self.period * self.rect.x) + 140
         
         #@staticmethod
         #def movement(SCREENWIDTH):
@@ -128,3 +141,7 @@ class BugAttack(pygame.sprite.Sprite):
         BugAttack.normal_list.remove(self)
         del self
         
+class Game:
+    end = False
+    start = False
+    

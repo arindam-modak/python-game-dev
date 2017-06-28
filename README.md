@@ -5,6 +5,8 @@
 ### Game Type : Shooting
 ## How to install : Just download the files and run this (Bug and Insect-0.0.0-win32.msi) file and easily install the game.
 
+## To play open the application file : main (in the installed folder). 
+
 ## How To Play: 
 ### 1. 'A' : Bug goes left
 ### 2. 'B' : Bug goes right

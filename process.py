@@ -29,34 +29,46 @@ def process(bug,FPS,total_frames):
         bug.jumping = True
     
     if keys[pygame.K_SPACE]:
-        def direction():
-            if classes.Bug.going_right:
-                p.velx = 8
-            else:
-                p.image = pygame.transform.flip(p.image, True, False)
-                p.velx = -8
-        if (classes.BugAttack.fire):
-            p = classes.BugAttack(bug.rect.x,bug.rect.y, "images/fire2.gif")
-            direction()
-        else:
-            p = classes.BugAttack(bug.rect.x,bug.rect.y, "images/bolt.gif")
-            direction()
+        if classes.Game.end == True:
+            classes.Game.end = False
+        if classes.Game.start == False:
+            classes.Game.start = True
+            for fly in classes.Fly.List:
+                fly.destroy(classes.Fly)
+            for attack in classes.BugAttack.List:
+                attack.destroy()
+            classes.Fly.count = 0
             
-    spawn(FPS,total_frames)
-    collisions()
+        else:
+            def direction():
+                if classes.Bug.going_right:
+                    p.velx = 6
+                else:
+                    p.image = pygame.transform.flip(p.image, True, False)
+                    p.velx = -6
+            if (classes.BugAttack.fire):
+                p = classes.BugAttack(bug.rect.x,bug.rect.y, "images/fire2.gif")
+                direction()
+                p.velx = p.velx/3.0
+            else:
+                p = classes.BugAttack(bug.rect.x,bug.rect.y, "images/bolt.gif")
+                direction()
+    if classes.Game.start == True:        
+        spawn(FPS,total_frames)
+        collisions(bug)
     
 def spawn(FPS,total_frames):
 
-    four_seconds = FPS * 4
+    seconds = FPS * 3
 
-    if total_frames % four_seconds==0:
+    if total_frames % seconds==0:
         r = random.randint(1,2)
         x = 1
         if r == 2:
             x = 640 - 40
         classes.Fly(x,130,"images/fly.png")
 
-def collisions():
+def collisions(bug):
 
     for fly in classes.Fly.List:
         if pygame.sprite.spritecollide(fly, classes.BugAttack.List, False):
@@ -64,6 +76,10 @@ def collisions():
                 fly.health -= fly.half_health
             else:
                 fly.velx = 0
+                fly.go_down = True
+        if pygame.sprite.spritecollide(fly, classes.Bug.List, False):
+            classes.Game.end = True
+            classes.Game.start = False
 
     for attack in classes.BugAttack.List:
         if pygame.sprite.spritecollide(attack, classes.Fly.List, False):

@@ -2,6 +2,8 @@ import pygame, sys
 from classes import *
 from process import process
 
+# Made By ADM - Arindam Das Modak (IIT2016036 - IIIT Allahabad)
+
 pygame.init()
 SCREENWIDTH, SCREENHEIGHT = 640, 360
 screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
@@ -34,6 +36,8 @@ while True:
         screen.blit(text,(SCREENWIDTH/2,SCREENHEIGHT/2))
         text = font.render("(Press SPACE)", True,  (50,100,50))
         screen.blit(text,(SCREENWIDTH/2 - 20,SCREENHEIGHT/2 + 60))
+        text = font.render("ADM", True,  (0,0,0))
+        screen.blit(text,(SCREENWIDTH - 100,0))
         Fly.score(screen)
         pygame.display.flip()
         

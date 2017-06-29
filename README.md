@@ -9,7 +9,7 @@
 
 ## How To Play: 
 ### 1. 'A' : Bug goes left
-### 2. 'B' : Bug goes right
+### 2. 'D' : Bug goes right
 ### 3. 'SPACE' : Bug attacks with Fire or Bolt
 ### 4. 'W' : Bug Jumps in air
 ### 5. 'E' : Bug switches weapon b/w Fire and Bolt

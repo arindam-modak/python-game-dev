@@ -6,7 +6,7 @@
 ## How to install : Just download the files and run this (Bug and Insect-0.0.0-win32.msi) file and easily install the game.
 
 ## To play open the application file : main (in the installed folder). 
-(buggame.JPG)
+![game](buggame.JPG)
 ## How To Play: 
 ### 1. 'A' : Bug goes left
 ### 2. 'D' : Bug goes right
